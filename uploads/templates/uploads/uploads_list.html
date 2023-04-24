@@ -1,0 +1,11 @@
+{%extends 'base.html'%}
+{%block content%}
+<h1>CSV List</h1>
+<ol>
+    {% for csv in csv_list %}
+    <li>{{ csv }} uploaded on {{csv.date_uploaded}} </li>
+    {% empty %}
+    <li>No CSV files found.</li>
+    {% endfor %}
+</ol>
+{%endblock%}
