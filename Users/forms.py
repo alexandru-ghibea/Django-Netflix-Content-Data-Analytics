@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django import forms
 
 
-
 class UserRegisterForm(UserCreationForm):
     """Form for creating new users for the website"""
     # additional fields for them form
@@ -18,4 +17,3 @@ class UserRegisterForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields['username'].label = 'Display Name'
         self.fields['email'].label = 'Email Address'
-    

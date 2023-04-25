@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Profile Details</h1>
+<p><strong>First Name:</strong> {{ user.first_name }}</p>
+<p><strong>Last Name:</strong> {{ user.last_name }}</p>
+<p><strong>Email:</strong> {{ user.email }}</p>
+<p><strong>Username:</strong> {{ user.username }}</p>
+<p><strong>Date Joined: </strong>{{ user.date_joined }}</p>
+<p><strong>Profile Picture: </strong><img src=" {{ user.userprofile.profile_pic.url }}" alt="Profile Picture" class=""
+                style="width: 100px; height: 100px; margin-top: 10px; margin-right: 10px;"></p>
+
+<form action="" method="POST">
+        {% csrf_token %}
+        <input class='btn btn-primary btn-sm' type=" submit" value="Change Password">
+        <a href="{%url 'users:profile_update'%}"><input class="btn btn-primary btn-sm" type="submit"
+                        value="Change Picture"></a>
+</form>
+<h3>Uploaded CSV</h3>
+<li>TODO: Get all uploaded csv HERE</li>
+
+{% endblock %}

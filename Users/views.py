@@ -1,9 +1,14 @@
-from django.shortcuts import render
 from . import forms
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 from .models import UserProfile
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import UpdateView
+from django.contrib.auth import get_user_model
+
 # Create your views here.
+
+User = get_user_model()
 
 
 class SignUpView(CreateView):
@@ -20,4 +25,33 @@ class SignUpView(CreateView):
             user_profile.save()
         return super().form_valid(form)
 
-     
+
+class ProfileDetailView(LoginRequiredMixin, DetailView):
+    template_name = 'users/profile_detail.html'
+    model = UserProfile
+
+    def get_object(self):
+        # Retrieve the User object for the currently logged-in user
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        print(user_profile.profile_pic)
+        context['user_profile'] = user_profile
+        return context
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = 'users/profile_update.html'
+    model = UserProfile
+
+    def get_object(self):
+        # Retrieve the User object for the currently logged-in user
+        return self.request.user
+
+    def form_valid(self, form):
+        user_profile = form.save(commit=False)
+        user_profile.user = self.request.user
+        user_profile.save()
+        return super().form_valid(form)
