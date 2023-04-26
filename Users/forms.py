@@ -17,3 +17,10 @@ class UserRegisterForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         self.fields['username'].label = 'Display Name'
         self.fields['email'].label = 'Email Address'
+
+
+class ChangeProfilePictureForm(forms.ModelForm):
+    """Form for updating profile picture"""
+    model = get_user_model()
+    fields = "__all__"
+    image = forms.ImageField(required=False)

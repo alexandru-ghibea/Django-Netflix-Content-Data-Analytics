@@ -36,7 +36,7 @@
       <ul class="nav navbar-nav navbar-right">
         {% if user.is_authenticated %}
         {% if user.userprofile.profile_pic %}
-        <a href=" {% url 'users:profile_detail' %}"><img src=" {{ user.userprofile.profile_pic.url }}"
+        <a href=" {% url 'users:profile_detail' pk=user.pk %}"><img src=" {{ user.userprofile.profile_pic.url }}"
             alt="Profile Picture" class="img-circle"
             style="width: 30px; height: 30px; margin-top: 10px; margin-right: 10px;">
         </a>

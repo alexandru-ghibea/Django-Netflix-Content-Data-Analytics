@@ -5,7 +5,7 @@ from .models import UserProfile
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import UpdateView
 from django.contrib.auth import get_user_model
-
+from django.shortcuts import redirect
 # Create your views here.
 
 User = get_user_model()
@@ -37,21 +37,29 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user_profile = UserProfile.objects.get(user=self.request.user)
-        print(user_profile.profile_pic)
         context['user_profile'] = user_profile
         return context
 
 
-class ProfileUpdateView(LoginRequiredMixin, UpdateView):
-    template_name = 'users/profile_update.html'
+class ChangeProfilePictureView(LoginRequiredMixin, UpdateView):
     model = UserProfile
+    fields = ['profile_pic']
+    template_name = 'users/change_profile_picture.html'
 
     def get_object(self):
         # Retrieve the User object for the currently logged-in user
         return self.request.user
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        context['user_profile'] = user_profile
+        return context
+
     def form_valid(self, form):
-        user_profile = form.save(commit=False)
-        user_profile.user = self.request.user
-        user_profile.save()
-        return super().form_valid(form)
+        profile_pic = form.cleaned_data.get('profile_pic')
+        if profile_pic:
+            user_profile = UserProfile.objects.get(user=self.request.user)
+            user_profile.profile_pic = profile_pic
+            user_profile.save()
+        return redirect('users:profile_detail', pk=self.request.user.pk)
