@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django import forms
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 class UserRegisterForm(UserCreationForm):
@@ -21,6 +22,23 @@ class UserRegisterForm(UserCreationForm):
 
 class ChangeProfilePictureForm(forms.ModelForm):
     """Form for updating profile picture"""
-    model = get_user_model()
-    fields = "__all__"
-    image = forms.ImageField(required=False)
+    class Meta:
+        model = get_user_model()
+        fields = '__all__'
+
+
+class PasswordChangeForm(PasswordChangeForm):
+    """Form for updating password"""
+
+    old_password = forms.CharField(
+        label='Old Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
+    new_password1 = forms.CharField(
+        label='New Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
+    new_password2 = forms.CharField(
+        label='Confirm New Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )

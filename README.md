@@ -1,11 +1,11 @@
-# Netflix Data Analytics Webpage (IN PROGRESS)
+# Netflix Data Analytics Webpage (WIP)
 
 This is a Django web application that provides data analytics for Netflix. The app collects data from various sources and presents it in a user-friendly way.
 
 ## Features
 
 - User-friendly interface for visualizing Netflix data analytics
-- Dashboard with key metrics such as number of users, total watch time 
+- Dashboard with key metrics such as number of users, total watch time
 - Interactive charts and graphs to display Netflix data analytics
 - Filter options to refine data analytics based on specific time periods or genres
 - Authentication and authorization for secure access to Netflix data analytics
@@ -19,21 +19,21 @@ This is a Django web application that provides data analytics for Netflix. The a
 # Installation
 
 ### 1. Clone the repository to your local machine
-`git clone https://github.com/your-username/netflix-analytics.git`
 
+`git clone https://github.com/your-username/netflix-analytics.git`
 
 ### 2. Install dependencies
 
-- `cd netflix-analytics` 
+- `cd netflix-analytics`
 - `pip install -r requirements.txt`
 
-
 ### 3.Run migrations
+
 `python manage.py migrate`
 
 ### Start the server
-`python manage.py runserver`
 
+`python manage.py runserver`
 
 ### Usage
 
@@ -43,5 +43,3 @@ This is a Django web application that provides data analytics for Netflix. The a
 4. Logout to exit the Netflix data analytics webpage
 
 ### Contributors
- 
-

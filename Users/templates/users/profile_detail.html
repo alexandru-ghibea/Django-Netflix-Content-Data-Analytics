@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <br>
@@ -18,22 +19,29 @@
                                         <p><strong>Email:</strong> {{ user.email }}</p>
                                         <p><strong>Username:</strong> {{ user.username }}</p>
                                         <p><strong>Date Joined: </strong>{{ user.date_joined }}</p>
-                                        <p><strong>Profile Picture: </strong><img
+                                        {% if user.userprofile.profile_pic %}
+                                        <p><strong>Profile Picture: </strong><img class="img-circle"
                                                         src=" {{ user.userprofile.profile_pic.url }}"
-                                                        alt="Profile Picture" class=""
-                                                        style="width: 50px; height: 50px; margin-top: 10px; margin-right: 10px;">
+                                                        alt="Profile Picture" class="" style="width: 50px; height: 50px; margin-top: 10px; margin-right:
+                                                10px;">
                                         </p>
+                                        {%else%}
+                                        <p><strong>Profile Picture: </strong><img class="img-circle"
+                                                        src="{% static 'Netflix/images/default_profile_pic.jpg' %}"
+                                                        alt="Profile Picture" class="" style="width: 50px; height: 50px; margin-top: 10px; margin-right:
+                                        10px;">
+                                                {% endif %}
+
                                         <form action="{% url 'users:change_profile_picture' %}" method="POST">
+                                                <br>
                                                 {% csrf_token %}
-                                                <input class='btn btn-primary btn-sm' type=" submit"
-                                                        value="Change Password">
+                                                <a href="{%url 'users:change_password'%}">
+                                                        <input class='btn btn-primary btn-sm' type=" submit"
+                                                                value="Change Password">
+                                                </a>
                                                 <a href="{%url 'users:change_profile_picture'%}"><input
                                                                 class="btn btn-primary btn-sm" type="submit"
                                                                 value="Change Picture"></a>
                                         </form>
-                                        <h3>Uploaded CSV</h3>
-                                        <li>TODO: Get all uploaded csv HERE</li>
                                 </div>
-
-
                                 {% endblock %}

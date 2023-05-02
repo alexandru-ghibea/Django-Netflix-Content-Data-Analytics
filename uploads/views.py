@@ -41,5 +41,5 @@ class UploadFileListView(LoginRequiredMixin, ListView):
     context_object_name = 'csv_list'
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        # queryset = super().get_queryset()
         return Csv.objects.filter(user=self.request.user)

@@ -41,8 +41,10 @@
             style="width: 30px; height: 30px; margin-top: 10px; margin-right: 10px;">
         </a>
         {% else %}
-        <img src="{% static 'Netflix/images/default_profile_pic.jpg' %}" alt="Default Profile Picture"
-          class="img-circle" style="width: 30px; height: 30px; margin-top: 10px; margin-right: 10px;">
+        <a href="{% url 'users:profile_detail' pk=user.pk %}">
+          <img src="{% static 'Netflix/images/default_profile_pic.jpg' %}" alt="Default Profile Picture"
+            class="img-circle" style="width: 30px; height: 30px; margin-top: 10px; margin-right: 10px;">
+        </a>
         {% endif %}
         <li><a href="{%url 'uploads:csv_upload'%}" class="btn btn-simple">Upload CSV</a></li>
         <li><a href="#" class="btn btn-simple">View Analytics</a></li>
