@@ -47,7 +47,7 @@
         </a>
         {% endif %}
         <li><a href="{%url 'uploads:csv_upload'%}" class="btn btn-simple">Upload CSV</a></li>
-        <li><a href="#" class="btn btn-simple">View Analytics</a></li>
+        <li><a href="{%url 'uploads:all_filles' %}" class="btn btn-simple">View Files</a></li>
         <li><a href="{%url 'users:logout'%}" class="btn btn-simple">Log out</a></li>
         {% else %}
         <li><a href="{%url 'users:login'%}" class="btn btn-simple">Log in</a></li>

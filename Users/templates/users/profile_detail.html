@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
 <br>
 <div class="container">
@@ -35,7 +34,7 @@
                                         <form action="{% url 'users:change_profile_picture' %}" method="POST">
                                                 <br>
                                                 {% csrf_token %}
-                                                <a href="{%url 'users:change_password'%}">
+                                                <a href="{%url 'users:change_password' pk=user.pk%}">
                                                         <input class='btn btn-primary btn-sm' type=" submit"
                                                                 value="Change Password">
                                                 </a>

@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.shortcuts import redirect
 from django.views.generic import FormView
 from django.contrib import messages
-
+from uploads.models import Csv
 # Create your views here.
 
 User = get_user_model()
@@ -80,13 +80,15 @@ class ChangeProfilePictureView(LoginRequiredMixin, UpdateView):
             user_profile = UserProfile.objects.get(user=self.request.user)
             user_profile.profile_pic = profile_pic
             user_profile.save()
+        messages.success(
+            self.request, 'Your profile picture was successfully updated!')
         return redirect('users:profile_detail', pk=self.request.user.pk)
 
 
 class ChangePasswordView(LoginRequiredMixin, FormView):
     template_name = 'users/change_password.html'
     form_class = forms.PasswordChangeForm
-    success_url = reverse_lazy('users:profile_detail')
+    success_url = reverse_lazy('users:change_password')
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -98,4 +100,11 @@ class ChangePasswordView(LoginRequiredMixin, FormView):
         messages.success(
             self.request, 'Your password was successfully updated!')
         update_session_auth_hash(self.request, form.user)
-        return redirect('users:profile_detail', pk=self.request.user.pk)
+        return redirect('users:change_password', pk=self.request.user.pk)
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)

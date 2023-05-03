@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "Users.apps.UsersConfig",
     'bootstrap5',
     'uploads',
+    'analytics',
 ]
 
 MIDDLEWARE = [

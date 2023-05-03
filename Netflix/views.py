@@ -13,5 +13,3 @@ class LoginSuccess(TemplateView):
 class LogoutSuccess(TemplateView):
     template_name = 'logout_success.html'
 
-# TODO 1: add a change password view
-# TODO 2: add a change profile picture view
