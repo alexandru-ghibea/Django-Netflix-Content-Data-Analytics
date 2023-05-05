@@ -22,7 +22,8 @@ class UploadFileView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         csv_file = form.cleaned_data.get('csv_file')
         file_name = csv_file.name
-        file_path = f'csv_files/{self.request.user}/{file_name}'
+        user_folder = str(self.request.user)
+        file_path = os.path.join('csv_files', user_folder, file_name)
 
         # Overwrite the file if it already exists
         if default_storage.exists(file_path):

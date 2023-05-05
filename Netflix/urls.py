@@ -27,6 +27,7 @@ urlpatterns = [
     path("login_success/", views.LoginSuccess.as_view(), name="login_success"),
     path("logout_success/", views.LogoutSuccess.as_view(), name="logout_success"),
     path("uploads/", include("uploads.urls", namespace='uploads')),
+    path("analytics/", include("analytics.urls", namespace='analytics')),
 ]
 
 if settings.DEBUG:

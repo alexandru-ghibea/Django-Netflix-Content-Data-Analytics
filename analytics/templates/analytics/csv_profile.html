@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if error_message %}
+<div class="alert alert-danger">{{ error_message|upper }}</div>
+{% else %}
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -13,12 +16,12 @@
     <tbody>
         {% for row in table_data %}
         <tr>
-            {%for k, v in row.items%}
-            <td>
-                {{v}}</td>
-            {%endfor%}
+            {% for k, v in row.items %}
+            <td>{{ v }}</td>
+            {% endfor %}
         </tr>
         {% endfor %}
     </tbody>
 </table>
+{% endif %}
 {% endblock %}
