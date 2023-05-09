@@ -30,8 +30,10 @@
     </tbody>
 </table>
 {%else%}
-<input type="text" id="search" onkeyup="filterTableFunc()" placeholder="Search Profile....."><br><br>
-<table class="table table-bordered my-table">
+<h2>Movies & Series added to Profile List</h2>
+<br>
+<input type="text" id="search" onkeyup="filterTableFunc()" placeholder="Search...."><br><br>
+<table class="table table-bordered my-table" id="myTable">
     <thead>
         <tr>
             <th>Profile Name</th>
@@ -55,25 +57,81 @@
     <button id="nextBtn" onclick="nextFunc()">Next</button>
 </div>
 <script>
+    var currentPage = 1;
+    var rowsPerPage = 5;
+    var totalRows = 0;
+    var filteredRows = [];
+    var lastSearchTerm = "";
+
     function filterTableFunc() {
         var filterResult = document.getElementById("search").value.toLowerCase();
-        var empTable = document.getElementsByClassName("table table-bordered my-table");
-        var tr = empTable[0].getElementsByTagName("tr");
+        var empTable = document.getElementById("myTable");
+        var tr = empTable.getElementsByTagName("tr");
+
+        if (filterResult !== lastSearchTerm) {
+            // Search term has changed since last search, reset current page to 1
+            currentPage = 1;
+            lastSearchTerm = filterResult;
+        }
+
+        filteredRows = [];
         for (var i = 1; i < tr.length; i++) {
             tr[i].style.display = "none";
             const tdArray = tr[i].getElementsByTagName("td");
             for (var j = 0; j < tdArray.length; j++) {
                 if (tdArray[j].innerHTML.toLowerCase().indexOf(filterResult) > -1) {
-                    tr[i].style.display = "";
+                    filteredRows.push(tr[i]);
                     break;
                 }
             }
+        }
+
+        totalRows = filteredRows.length;
+
+        var startIndex = (currentPage - 1) * rowsPerPage;
+        var endIndex = startIndex + rowsPerPage;
+
+        for (var i = 0; i < filteredRows.length; i++) {
+            if (i >= startIndex && i < endIndex) {
+                filteredRows[i].style.display = "";
+            }
+        }
+
+        var pageInfo = document.getElementById("pageInfo");
+        var numPages = Math.ceil(totalRows / rowsPerPage);
+        if (numPages > 1) {
+            pageInfo.innerHTML = "Page " + currentPage + " of " + numPages + " (" + totalRows + " total rows)";
+            var prevBtn = document.getElementById("prevBtn");
+            var nextBtn = document.getElementById("nextBtn");
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === numPages;
+        } else {
+            pageInfo.innerHTML = "";
+            document.getElementById("prevBtn").disabled = true;
+            document.getElementById("nextBtn").disabled = true;
+        }
+    }
+
+
+    function prevFunc() {
+        if (currentPage > 1) {
+            currentPage--;
+            filterTableFunc();
+        }
+    }
+
+    function nextFunc() {
+        var numPages = Math.ceil(totalRows / rowsPerPage);
+        if (currentPage < numPages) {
+            currentPage++;
+            filterTableFunc();
         }
     }
 
 </script>
 
+
 {% endif %}
 {% endif %}
-{%endif%}
+{% endif %}
 {% endblock %}

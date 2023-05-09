@@ -3,6 +3,6 @@ from . import views
 app_name = 'analytics'
 
 urlpatterns = [
-    path('profiles/<str:filename>',
-         views.CsvProfileView.as_view(), name='profile_list'),
+    path('csv_analytics/<str:filename>',
+         views.CsvAnalyticsView.as_view(), name='csv_analytics'),
 ]
