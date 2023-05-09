@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if plot_data %}
+<div>
+    <img src="data:image/png;base64,{{ plot_data }}" alt="Billing History">
+</div>
+{%else%}
+{% if error_message %}
+<div class="alert alert-danger">{{ error_message|upper }}</div>
+{% else %}
+<table class="table table-bordered">
+    <thead>
+        {%if filename == "Profiles.csv"%}
+        <tr>
+            <th>Profile Name</th>
+            <th>Profile Creation Time</th>
+            <th>Maturity Level</th>
+            <th>Primary Lang</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in table_data %}
+        <tr>
+            {% for k, v in row.items %}
+            <td>{{ v }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{%else%}
+<input type="text" id="search" onkeyup="filterTableFunc()" placeholder="Search Profile....."><br><br>
+<table class="table table-bordered my-table">
+    <thead>
+        <tr>
+            <th>Profile Name</th>
+            <th>Title Name</th>
+            <th>Utc Title Add Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in table_data %}
+        <tr>
+            {% for k, v in row.items %}
+            <td>{{ v }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div>
+    <button id="prevBtn" onclick="prevFunc()">Prev</button>
+    <span id="pageInfo"></span>
+    <button id="nextBtn" onclick="nextFunc()">Next</button>
+</div>
+<script>
+    function filterTableFunc() {
+        var filterResult = document.getElementById("search").value.toLowerCase();
+        var empTable = document.getElementsByClassName("table table-bordered my-table");
+        var tr = empTable[0].getElementsByTagName("tr");
+        for (var i = 1; i < tr.length; i++) {
+            tr[i].style.display = "none";
+            const tdArray = tr[i].getElementsByTagName("td");
+            for (var j = 0; j < tdArray.length; j++) {
+                if (tdArray[j].innerHTML.toLowerCase().indexOf(filterResult) > -1) {
+                    tr[i].style.display = "";
+                    break;
+                }
+            }
+        }
+    }
+
+</script>
+
+{% endif %}
+{% endif %}
+{%endif%}
+{% endblock %}
