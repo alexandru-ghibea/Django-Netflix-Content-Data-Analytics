@@ -133,7 +133,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # In order to allow users to upload their own images, we need to create a folder called "media" in the root directory
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "media/"
-
 # Use the built-in Django login and logout features
 LOGIN_REDIRECT_URL = 'login_success'
 LOGOUT_REDIRECT_URL = 'logout_success'
