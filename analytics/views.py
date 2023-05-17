@@ -6,6 +6,7 @@ from django.http import HttpResponse
 import io
 import matplotlib.pyplot as plt
 import matplotlib
+import textwrap
 matplotlib.use('Agg')
 
 
@@ -21,6 +22,7 @@ class CsvAnalyticsView(TemplateView):
         plot_data = None
         plot_data2 = None
         plot_title = None
+        plot_data_top_3 = None
 
         if filename == 'Profiles.csv':
             selected_columns = [
@@ -113,7 +115,6 @@ class CsvAnalyticsView(TemplateView):
 
             plt.title('Duration by Profile')
             plt.axis('equal')
-
             # Save the plot to a buffer
             buf = io.BytesIO()
             fig.savefig(buf, format='png')
@@ -125,8 +126,55 @@ class CsvAnalyticsView(TemplateView):
             # Add the plot to the context as a base64-encoded string
             plot_data = base64.b64encode(buf.getvalue()).decode('utf-8')
 
-            # Clear the plot
-            plt.close(fig)
+            # Add plots for top 3 movies/series watched/profile
+
+            clean_df = df[selected_columns].copy()
+
+            def extract_name(title):
+                if ":" in title:
+                    return title.split(":")[0]
+                else:
+                    return title
+            clean_df.loc[:, 'Title'] = clean_df['Title'].apply(extract_name)
+
+            # Calculate the total duration for each title across all profiles
+            grouped_duration_data = clean_df.groupby(["Profile Name", "Title"]).agg({
+                "Duration": "sum"}).reset_index()
+            profile_totals = grouped_duration_data.groupby(
+                "Profile Name").agg({"Duration": "sum"}).reset_index()
+            sorted_profile_totals = profile_totals.sort_values(
+                "Duration", ascending=False)
+            top_3_titles = sorted_profile_totals.head(3)
+            fig, axs = plt.subplots(1, 3, figsize=(
+                12, 4), tight_layout=True)
+
+            # Iterate over the top 3 profiles
+            for i, profile_name in enumerate(top_3_titles['Profile Name']):
+                profile_data = grouped_duration_data[grouped_duration_data['Profile Name']
+                                                     == profile_name].nlargest(3, 'Duration')
+
+                # Create a bar chart for each profile
+                ax = axs[i]
+                ax.bar(
+                    profile_data['Title'], profile_data['Duration'].dt.total_seconds() / 3600)
+                ax.set_ylabel('Duration (hrs)')
+
+                # Wrap the title text if it's too long
+
+                wrapped_titles = [textwrap.fill(
+                    title, 10) for title in profile_data['Title']]
+                ax.set_xticklabels(wrapped_titles, wrap=True, rotation=0)
+                ax.set_title(
+                    f'Top 3 Titles for Profile: \n{profile_name}', wrap=True)
+
+                # Save the plot to a buffer
+                buf1 = io.BytesIO()
+                plt.savefig(buf1, format='png')
+                buf1.seek(0)
+
+                # Convert the plot to a base64-encoded string
+                plot_data_top_3 = base64.b64encode(
+                    buf1.getvalue()).decode('utf-8')
 
         else:
             context['error_message'] = 'View not implemented yet for this file.'
@@ -146,4 +194,5 @@ class CsvAnalyticsView(TemplateView):
         context['plot_data'] = plot_data
         context['plot_data1'] = plot_data1
         context['plot_data2'] = plot_data2
+        context['plot_data_top_3'] = plot_data_top_3
         return context
