@@ -109,11 +109,12 @@ class CsvAnalyticsView(TemplateView):
                 lambda x: f"{x.days} days\n{x.components.hours} hrs and {x.components.minutes} minutes")
             labels = [f'{label} ({duration})' for label, duration in zip(
                 duration_data.index, formatted_durations)]
-            ax.pie(duration_data, labels=labels, autopct='%0.2f%%')
+            ax.pie(duration_data, autopct='%0.2f%%')
 
             # ax.pie(duration_data, labels=labels, autopct='%1.1f%%')
 
             plt.title('Duration by Profile')
+            plt.legend(labels, bbox_to_anchor=(1.05, 1), loc=1)
             plt.axis('equal')
             # Save the plot to a buffer
             buf = io.BytesIO()
@@ -157,7 +158,7 @@ class CsvAnalyticsView(TemplateView):
                 ax = axs[i]
                 ax.bar(
                     profile_data['Title'], profile_data['Duration'].dt.total_seconds() / 3600)
-                ax.set_ylabel('Duration (hrs)')
+                ax.set_ylabel('Total View Time (hrs)')
 
                 # Wrap the title text if it's too long
 
@@ -165,16 +166,16 @@ class CsvAnalyticsView(TemplateView):
                     title, 10) for title in profile_data['Title']]
                 ax.set_xticklabels(wrapped_titles, wrap=True, rotation=0)
                 ax.set_title(
-                    f'Top 3 Titles for Profile: \n{profile_name}', wrap=True)
+                    f'Top 3 Titles for: \n{profile_name}', wrap=True)
 
                 # Save the plot to a buffer
-                buf1 = io.BytesIO()
-                plt.savefig(buf1, format='png')
-                buf1.seek(0)
+                buf = io.BytesIO()
+                plt.savefig(buf, format='png')
+                buf.seek(0)
 
                 # Convert the plot to a base64-encoded string
                 plot_data_top_3 = base64.b64encode(
-                    buf1.getvalue()).decode('utf-8')
+                    buf.getvalue()).decode('utf-8')
 
         else:
             context['error_message'] = 'View not implemented yet for this file.'

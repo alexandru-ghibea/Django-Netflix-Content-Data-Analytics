@@ -12,6 +12,7 @@
     {% endif %}
 </div>
 
+
 {%else%}
 {% if error_message %}
 <div class="alert alert-danger">{{ error_message|upper }}</div>
@@ -37,7 +38,8 @@
     </tbody>
 </table>
 {%else%}
-<h2>Movies & Series added to Profile List</h2>
+<h2>User Profile Favorites</h2>
+<p> <em>Filter by Profile Name /Title Name</em> </p>
 <br>
 <input type="text" id="search" onkeyup="filterTableFunc()" placeholder="Search...."><br><br>
 <table class="table table-bordered my-table" id="myTable">
