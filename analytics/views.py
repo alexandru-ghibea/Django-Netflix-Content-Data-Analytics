@@ -7,6 +7,7 @@ import io
 import matplotlib.pyplot as plt
 import matplotlib
 import textwrap
+
 matplotlib.use('Agg')
 
 
@@ -23,6 +24,7 @@ class CsvAnalyticsView(TemplateView):
         plot_data2 = None
         plot_title = None
         plot_data_top_3 = None
+        plot_data_top_4 = None
 
         if filename == 'Profiles.csv':
             selected_columns = [
@@ -99,6 +101,9 @@ class CsvAnalyticsView(TemplateView):
             csv_file_path = csv_file_obj.csv_file.path
             df = pd.read_csv(csv_file_path, usecols=selected_columns)
             df['Duration'] = pd.to_timedelta(df['Duration'])
+            df['Start Time'] = pd.to_datetime(df['Start Time'])
+            df['Date'] = df['Start Time'].dt.date
+            profile_names = df['Profile Name'].unique()
 
             # Group the data by Profile Name and calculate total duration for each profile
             duration_data = df.groupby('Profile Name')['Duration'].sum()
@@ -149,7 +154,7 @@ class CsvAnalyticsView(TemplateView):
             fig, axs = plt.subplots(1, 3, figsize=(
                 12, 4), tight_layout=True)
 
-            # Iterate over the top 3 profiles
+            # Iterate over the top 3 titles
             for i, profile_name in enumerate(top_3_titles['Profile Name']):
                 profile_data = grouped_duration_data[grouped_duration_data['Profile Name']
                                                      == profile_name].nlargest(3, 'Duration')
@@ -177,6 +182,45 @@ class CsvAnalyticsView(TemplateView):
                 plot_data_top_3 = base64.b64encode(
                     buf.getvalue()).decode('utf-8')
 
+            fig, axs = plt.subplots(3, 1, figsize=(12, 12), tight_layout=True)
+            colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+            for i, profile_name in enumerate(profile_names):
+                profile_data = df[df['Profile Name'] == profile_name].copy()
+                profile_data.loc[:, 'Title'] = profile_data['Title'].apply(
+                    extract_name)
+                total_duration = profile_data.groupby('Date')['Duration'].sum()
+                sorted_durations = total_duration.sort_values(ascending=False)
+
+                top_dates = []
+                top_durations = []
+                top_titles = []
+                for date, duration in sorted_durations.head(3).items():
+                    titles = profile_data[profile_data['Date']
+                                          == date]['Title'].unique()
+                    title_count = len(titles)
+                    top_dates.append(str(date))
+                    top_durations.append(duration.total_seconds() / 3600)
+                    top_titles.append('\n'.join(titles))
+
+                ax = axs[i]
+                ax.bar(top_dates, top_durations, color=colors)
+                # ax.set_xlabel('Date')
+                ax.set_ylabel('Total View Time (hours)')
+                ax.set_title(
+                    f'Top 3 Days Most Watched - \n Profile: {profile_name}')
+                ax.set_xticklabels(top_dates, rotation=45)
+                plt.subplots_adjust(hspace=0.5)
+                plt.tight_layout()
+
+                # Save the plot to a buffer
+                buf = io.BytesIO()
+                plt.savefig(buf, format='png')
+                buf.seek(0)
+
+                # Convert the plot to a base64-encoded string
+                plot_data_top_4 = base64.b64encode(
+                    buf.getvalue()).decode('utf-8')
+
         else:
             context['error_message'] = 'View not implemented yet for this file.'
             context['plot_message'] = 'Plot not available for this file yet.'
@@ -196,4 +240,5 @@ class CsvAnalyticsView(TemplateView):
         context['plot_data1'] = plot_data1
         context['plot_data2'] = plot_data2
         context['plot_data_top_3'] = plot_data_top_3
+        context['plot_data_top_4'] = plot_data_top_4
         return context
