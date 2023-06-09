@@ -12,4 +12,3 @@ class LoginSuccess(TemplateView):
 
 class LogoutSuccess(TemplateView):
     template_name = 'logout_success.html'
-

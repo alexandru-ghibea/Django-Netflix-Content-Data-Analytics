@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'bootstrap5',
     'uploads',
     'analytics.apps.AnalyticsConfig',
-
 ]
 
 MIDDLEWARE = [

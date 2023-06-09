@@ -1,0 +1,37 @@
+body {
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  line-height: 1.5;
+  color: white;
+  background-image: url("https://images.unsplash.com/photo-1494995536846-47ab0fc5df1c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80");
+  background-size: Cover;
+}
+
+.mynav {
+  color: white;
+}
+.mynav:hover {
+  color: red;
+}
+.btn.btn-dark {
+  color: white;
+}
+.btn.btn-dark:hover {
+  color: red;
+  background-color: transparent;
+}
+.btn.btn-primary {
+  color: white;
+}
+.btn.btn-primary:hover {
+  color: red;
+  background-color: transparent;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="file"] {
+  width: 250px; /* Adjust the width as desired */
+  height: 30px; /* Adjust the height as desired */
+}

@@ -11,6 +11,11 @@
     <img src="data:image/png;base64,{{ plot_data_top_3 }}" alt="Total Watched Time By Profile">
     {% endif %}
 </div>
+<div class="container" style="display: flex; justify-content: center; align-items: center;">
+    {% if plot_data_top_3 %}
+    <img src="data:image/png;base64,{{ plot_data_top_4 }}" alt="Total Watched Time By Profile">
+    {% endif %}
+</div>
 
 
 {%else%}

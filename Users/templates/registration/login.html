@@ -1,7 +1,10 @@
 {%extends 'base.html'%}
 {%load bootstrap5%}
+{% load static %}
 {%block content%}
+{% load static %}
 <div class="container">
+
     <h1>Log In</h1>
     <form method="POST">
         {%csrf_token%}
