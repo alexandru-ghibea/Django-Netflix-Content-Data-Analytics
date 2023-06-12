@@ -1,6 +1,6 @@
 # Netflix Data Analytics Webpage (WIP)
 
-This is a Django web application that provides data analytics for Netflix. The app collects data from various sources and presents it in a user-friendly way.
+This is a Django web application that provides data analytics for Netflix. The app collects data from csv sources and presents it in a user-friendly way.
 
 ## Features
 
