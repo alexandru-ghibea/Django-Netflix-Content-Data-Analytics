@@ -8,39 +8,42 @@
                         <div class="panel panel-default">
                                 <div class="panel-heading">
                                         <h4 class="panel-title">
-                                                <a data-toggle="collapse" data-parent="#accordion">
-                                                        <span class="glyphicon glyphicon-user">
-                                                                {{user.first_name|capfirst}}
-                                                                {{user.last_name|capfirst}}</span>
+                                                <span class="glyphicon glyphicon-user">
+                                                        {{user.first_name|capfirst}}
+                                                        {{user.last_name|capfirst}}
+                                                </span>
                                 </div>
                                 <br>
-                                <div class="container">
-                                        <p><strong>Email:</strong> {{ user.email }}</p>
-                                        <p><strong>Username:</strong> {{ user.username }}</p>
-                                        <p><strong>Date Joined: </strong>{{ user.date_joined }}</p>
-                                        {% if user.userprofile.profile_pic %}
-                                        <p><strong>Profile Picture: </strong><img class="img-circle"
-                                                        src=" {{ user.userprofile.profile_pic.url }}"
-                                                        alt="Profile Picture" class="" style="width: 50px; height: 50px; margin-top: 10px; margin-right:
-                                                10px;">
-                                        </p>
-                                        {%else%}
-                                        <p><strong>Profile Picture: </strong><img class="img-circle"
-                                                        src="{% static 'Netflix/images/default_profile_pic.jpg' %}"
-                                                        alt="Profile Picture" class="" style="width: 50px; height: 50px; margin-top: 10px; margin-right:
-                                        10px;">
-                                                {% endif %}
+                                <div class="container profile-detail">
+                                        <div class="content">
+                                                <p><strong>Email:</strong> {{ user.email }}</p>
+                                                <p><strong>Username:</strong> {{ user.username }}</p>
+                                                <p><strong>Date Joined: </strong>{{ user.date_joined }}</p>
 
+                                                {% if user.userprofile.profile_pic %}
+                                                <p><strong>Profile Picture: </strong><img class="img-circle"
+                                                                src=" {{ user.userprofile.profile_pic.url }}"
+                                                                alt="Profile Picture">
+                                                </p>
+                                                {%else%}
+                                                <p><strong>Profile Picture: </strong><img class="img-circle"
+                                                                src="{% static 'Netflix/images/default_profile_pic.jpg' %}"
+                                                                alt="Profile Picture">
+                                                        {% endif %}
+                                        </div>
                                         <form action="{% url 'users:change_profile_picture' %}" method="POST">
                                                 <br>
                                                 {% csrf_token %}
-                                                <a href="{%url 'users:change_password' pk=user.pk%}">
-                                                        <input class='btn btn-primary btn-sm' type=" submit"
-                                                                value="Change Password">
-                                                </a>
-                                                <a href="{%url 'users:change_profile_picture'%}"><input
-                                                                class="btn btn-primary btn-sm" type="submit"
-                                                                value="Change Picture"></a>
+                                                <div class="buttons_profile">
+                                                        <a href="{%url 'users:change_password' pk=user.pk%}">
+                                                                <input class='btn btn-danger btn-sm' type=" submit"
+                                                                        value="Change Password">
+                                                        </a>
+                                                        <a href="{%url 'users:change_profile_picture'%}"><input
+                                                                        class="btn btn-danger btn-sm" type="submit"
+                                                                        value="Change Picture">
+                                                        </a>
+                                                </div>
                                         </form>
                                 </div>
                                 {% endblock %}

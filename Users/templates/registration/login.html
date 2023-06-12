@@ -2,15 +2,15 @@
 {%load bootstrap5%}
 {% load static %}
 {%block content%}
-{% load static %}
-<div class="container">
+<div class="container log_in">
 
     <h1>Log In</h1>
     <form method="POST">
         {%csrf_token%}
         {%bootstrap_form form%}
         <br>
-        <input type="submit" value="Log In" class="btn btn-primary">
+        <input type="submit" value="Log In" class="btn btn-danger">
+
     </form>
 </div>
 {%endblock%}

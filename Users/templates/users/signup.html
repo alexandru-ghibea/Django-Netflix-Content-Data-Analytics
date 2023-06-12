@@ -1,5 +1,6 @@
 {%extends 'base.html'%}
 {%load bootstrap5%}
+{% load static %}
 {%block content%}
 <div class="container sign-up">
     <h1>Sign Up!</h1>
@@ -7,7 +8,7 @@
         {%csrf_token%}
         {%bootstrap_form form%}
         <br>
-        <input type="submit" value="Sign Up" class="btn btn-primary">
+        <input type="submit" value="Sign Up" class="btn btn-danger">
     </form>
 </div>
 {%endblock%}

@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
-
+{%load static%}
 {% block content %}
 
 {% if plot_data %}
-<div class="container" style="display: flex; justify-content: center; align-items: center;">
+<div class="container my-chart">
     <img src="data:image/png;base64,{{ plot_data }}" alt="Total Watched Time By Profile">
 </div>
-<div class="container" style="display: flex; justify-content: center; align-items: center;">
+<div class="container my-chart">
     {% if plot_data_top_3 %}
     <img src="data:image/png;base64,{{ plot_data_top_3 }}" alt="Total Watched Time By Profile">
     {% endif %}
 </div>
-<div class="container" style="display: flex; justify-content: center; align-items: center;">
+<div class="container my-chart">
     {% if plot_data_top_3 %}
     <img src="data:image/png;base64,{{ plot_data_top_4 }}" alt="Total Watched Time By Profile">
     {% endif %}
