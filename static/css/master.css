@@ -55,6 +55,27 @@ input[type="file"] {
 }
 .content,
 .buttons_profile {
-  margin-left: 30px;
+  color: black;
+  margin-left: -15px;
+}
+
+.content,
+.panel-title {
+  color: white !important;
+  background-color: black !important;
+  background-image: black !important;
+}
+.panel.panel-default,
+.row {
+  background-color: black !important;
+  border-color: black !important;
+}
+.panel-heading {
+  padding: 0%;
+  border-color: black !important;
+}
+
+.btn.btn-danger {
+  font-weight: bold;
   color: black;
 }

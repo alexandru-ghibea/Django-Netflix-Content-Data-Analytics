@@ -222,8 +222,8 @@ class CsvAnalyticsView(TemplateView):
                     buf.getvalue()).decode('utf-8')
 
         else:
-            context['error_message'] = 'View not implemented yet for this file.'
-            context['plot_message'] = 'Plot not available for this file yet.'
+            context['error_message'] = 'Analytics not available yet for this file. Contact us for more information.'
+            context['plot_message'] = 'Analytics not available for this file yet. Contact us for more information.'
             return context
 
         # Get the table data
