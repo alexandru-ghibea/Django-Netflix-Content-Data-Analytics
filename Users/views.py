@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import UpdateView
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.shortcuts import redirect
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 from django.contrib import messages
 from uploads.models import Csv
 # Create your views here.
