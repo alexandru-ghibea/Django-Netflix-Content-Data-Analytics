@@ -84,8 +84,6 @@ class ChangeProfilePictureView(LoginRequiredMixin, UpdateView):
             user_profile = UserProfile.objects.get(user=self.request.user)
             user_profile.profile_pic = profile_pic
             user_profile.save()
-        messages.success(
-            self.request, 'Your profile picture was successfully updated!')
         return redirect('users:profile_detail', pk=self.request.user.pk)
 
 
