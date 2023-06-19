@@ -3,7 +3,9 @@
 {% load static %}
 {%block content%}
 <div class="container sign-up">
-    <h1>Sign Up!</h1>
+    <h1>Welcome to NCDA !</h1>
+    <p>Let's begin the adventure </p>
+    <br>
     <form method="POST" enctype="multipart/form-data">
         {%csrf_token%}
         {%bootstrap_form form%}

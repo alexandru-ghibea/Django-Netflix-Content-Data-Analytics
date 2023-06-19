@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
-
+<br>
 <div class="container">
     {% if user.is_authenticated %}
     <h3>Greetings {{user.userprofile}} and welcome to our Netflix content data analytics web-page!</h3>
     <br>
-    <p>Welcome to our Netflix content data analytics web page! We understand that interpreting CSV
+    <p>We understand that interpreting CSV
         files can be time-consuming and overwhelming. That's why we've developed a platform that makes it easy for you
         to upload and analyze your Netflix data.</p>
 
@@ -30,7 +30,7 @@
     {% else %}
     <h3>Greetings and welcome to our Netflix content data analytics web-page</h3>
     <br>
-    <p>Welcome to our Netflix content data analytics web page! We understand that interpreting CSV
+    <p>We understand that interpreting CSV
         files can be time-consuming and overwhelming. That's why we've developed a platform that makes it easy for you
         to upload and analyze your Netflix data.</p>
 
@@ -50,11 +50,9 @@
     </p>
     <p>
         Go to <a href="https://www.netflix.com/account/getmyinfo"
-            style="color: red;">https://www.netflix.com/account/getmyinfo</a> and
-        follow the instructions.
+            style="color: red;">https://www.netflix.com/account/getmyinfo</a>on how to get your raw data and start
+        analyzing it.
     </p>
-
-
     {% endif %}
 </div>
 {% endblock %}

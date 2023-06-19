@@ -116,9 +116,7 @@ class CsvAnalyticsView(TemplateView):
                 duration_data.index, formatted_durations)]
             ax.pie(duration_data, autopct='%0.2f%%')
 
-            # ax.pie(duration_data, labels=labels, autopct='%1.1f%%')
-
-            plt.title('Duration by Profile')
+            plt.title('View Time by Profile')
             plt.legend(labels, bbox_to_anchor=(1.05, 1), loc=1)
             plt.axis('equal')
             # Save the plot to a buffer

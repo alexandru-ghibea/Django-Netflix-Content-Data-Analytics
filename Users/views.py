@@ -9,6 +9,8 @@ from django.shortcuts import redirect
 from django.views.generic import FormView, TemplateView
 from django.contrib import messages
 from uploads.models import Csv
+from django.utils import timezone
+
 # Create your views here.
 
 User = get_user_model()
@@ -56,6 +58,8 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         user_profile = UserProfile.objects.get(user=self.request.user)
         context['user_profile'] = user_profile
+        context['user_timezone'] = timezone.get_current_timezone_name()
+
         return context
 
 

@@ -36,7 +36,9 @@
 
   <nav class="navbar  mynav" role="navigation" id="navbar">
     <div class="container">
-      <a class="navbar-brand mynav" href="{% url 'home_page' %}">Netflix Content Data Analytics</a>
+      <a class="navbar-brand mynav" href="{% url 'home_page' %}"><u style="color: red;">N</u>etflix <u
+          style="color: red;">C</u>ontent <u style="color: red;">D</u>ata
+        <u style="color: red;">A</u>nalytics</a>
       <ul class="nav navbar-nav navbar-right">
         {% if user.is_authenticated %}
         {% if user.userprofile.profile_pic %}
@@ -56,9 +58,6 @@
         {% else %}
         <li><a href="{%url 'users:login'%}" class="btn btn-dark ">Log in</a></li>
         <li><a href="{%url 'users:signup'%}" class="btn btn-dark">Sign up</a></li>
-
-
-
         {% endif %}
       </ul>
     </div>

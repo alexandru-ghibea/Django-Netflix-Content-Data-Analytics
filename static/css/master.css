@@ -44,8 +44,6 @@ input[type="file"] {
   height: 50%;
   width: 50%;
   margin: 50px auto;
-
-  background-color: rgba(255, 255, 255, 0.5);
 }
 .img-circle {
   width: 50px;
@@ -78,4 +76,14 @@ input[type="file"] {
 .btn.btn-danger {
   font-weight: bold;
   color: black;
+}
+
+.my-chart {
+  background-color: black;
+}
+a {
+  color: white;
+}
+a:hover {
+  color: red;
 }
