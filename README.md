@@ -5,8 +5,8 @@ This is a Django web application that provides data analytics for Netflix. The a
 ## Features
 
 - User-friendly interface for visualizing Netflix data analytics
-- Dashboard with key metrics such as number of users, total watch time
-- Interactive charts and graphs to display Netflix data analytics
+- Dashboard with key metrics such as number of users, total watch time, billing history, view time by profile
+- Interactive charts and graphs to display Netflix data analytics ( Top 3 titles watched by profile, Top 3 Days most watched by profile )
 - Filter options to refine data analytics based on specific time periods or genres
 - Authentication and authorization for secure access to Netflix data analytics
 

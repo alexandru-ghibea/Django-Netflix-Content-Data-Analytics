@@ -18,7 +18,8 @@
             <td>{{ file.date_uploaded }}</td>
             <!-- <td> Populate Yes or No depending on the .csv file - check if View implemented. If available Hyperlink the
                 answer </td> -->
-            <td><a href="{% url 'analytics:csv_analytics' filename=file.filename %}">Access Data</a>
+            <td>
+                <a href="{% url 'analytics:csv_analytics' filename=file.filename %}">Access Data</a>
             </td>
         </tr>
         {% endfor %}
