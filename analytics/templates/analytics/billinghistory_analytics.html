@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Billing Analytics</h1>
+<br>
+{% if plot_data_billing %}
+<div class="container my-chart">
+    <img src="data:image/png;base64,{{ plot_data_billing }}" alt="Billing Analytics">
+</div>
+{%endif%}
+{% endblock %}

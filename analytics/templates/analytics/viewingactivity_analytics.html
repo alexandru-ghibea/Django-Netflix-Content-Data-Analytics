@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-chart">
+    {% if plot_data_watch_time %}
+    <img src="data:image/png;base64,{{ plot_data_watch_time }}" alt="Total Watched Time By Profile">
+    {% endif %}
+</div>
+
+<div class="container my-chart">
+    {% if plot_data_top_3_most_watched %}
+    <img src="data:image/png;base64,{{ plot_data_top_3_most_watched }}" alt="Top3MostWatchedAnalytics">
+    {% endif %}
+</div>
+
+<div class="container my-chart">
+    {% if plot_data_top_3_days_most_watched%}
+    <img src="data:image/png;base64,{{ plot_data_top_3_days_most_watched }}" alt="Top3DaysAnalytics">
+    {% endif %}
+</div>
+{% endblock %}
