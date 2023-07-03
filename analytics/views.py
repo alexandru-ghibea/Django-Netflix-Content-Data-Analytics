@@ -9,9 +9,6 @@ import matplotlib
 import textwrap
 from django.template.loader import get_template
 from django.template.exceptions import TemplateDoesNotExist
-from .import forms
-from django.urls import reverse_lazy
-from django.views.generic import FormView
 
 matplotlib.use('Agg')
 
@@ -148,18 +145,9 @@ class MyListAnalytics:
             user=user, csv_file__icontains='MyList.csv').first()
         csv_file_path = csv_file_obj.csv_file.path
         df = pd.read_csv(csv_file_path, usecols=selected_columns)
-        # filtered_df = df[df["Profile Name"] == profile]
-        # pivot_df = pd.pivot_table(filtered_df, index=["Profile Name"], columns=[
-        #   "Title Name"], values=["Utc Title Add Date"], aggfunc=len, fill_value=0)
-        # pivot_dict = pivot_df.to_dict('index')
         clean_df = df.dropna().drop_duplicates()
         table_data = clean_df.to_dict('records')
-        # context['profiles'] = df["Profile Name"].unique()
-        # context['titles'] = df["Title Name"]
-        # context['pivot_dict'] = pivot_dict
-        # context['selected_profile'] = profile
         context['table_data'] = table_data
-
         return context
 
 

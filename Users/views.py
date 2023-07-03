@@ -6,9 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import UpdateView
 from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.shortcuts import redirect
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView
 from django.contrib import messages
-from uploads.models import Csv
 from django.utils import timezone
 
 # Create your views here.
@@ -110,3 +109,15 @@ class ChangePasswordView(LoginRequiredMixin, FormView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+
+class ContactView(LoginRequiredMixin, FormView):
+    template_name = 'users/contact.html'
+    form_class = forms.ContactForm
+    success_url = reverse_lazy('users:contact')
+
+    def form_valid(self, form):
+        form.send_email()
+        messages.success(
+            self.request, 'Your message was successfully sent!')
+        return redirect('users:contact', pk=self.request.user.pk)

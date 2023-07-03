@@ -55,9 +55,12 @@
         <li><a href="{%url 'uploads:csv_upload'%}" class="btn btn-dark">Upload CSV</a></li>
         <li><a href="{%url 'uploads:all_filles' %}" class="btn btn-dark">View Files</a></li>
         <li><a href="{%url 'users:logout'%}" class="btn btn-dark">Log out</a></li>
+        <li><a href="{%url 'users:contact'%}" class="btn btn-dark">Contact Us</a></li>
+
         {% else %}
         <li><a href="{%url 'users:login'%}" class="btn btn-dark ">Log in</a></li>
         <li><a href="{%url 'users:signup'%}" class="btn btn-dark">Sign up</a></li>
+
         {% endif %}
       </ul>
     </div>

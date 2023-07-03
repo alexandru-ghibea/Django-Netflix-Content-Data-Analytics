@@ -14,5 +14,6 @@ urlpatterns = [
          name='change_profile_picture'),
     path('profile_detail/<int:pk>/change_password/',  views.ChangePasswordView.as_view(template_name='registration/change_password.html'),
          name='change_password'),
-    
+    path('contact/', views.ContactView.as_view(), name='contact'),
+
 ]

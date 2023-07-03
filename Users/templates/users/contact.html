@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load bootstrap5 %}
+{% block content %}
+<br>
+<div class="container">
+    <form action="mailto:test@gmail.com" method="POST">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <br>
+        <button type="submit" class="btn btn-danger">Submit</button>
+    </form>
+</div>
+
+{% endblock %}

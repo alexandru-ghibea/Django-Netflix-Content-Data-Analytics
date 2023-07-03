@@ -44,3 +44,16 @@ class PasswordChangeForm(PasswordChangeForm):
     )
 
 
+class ContactForm(forms.Form):
+    """Form for contacting the website admin"""
+    name = forms.CharField(
+        label='Your Name',
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+    )
+    email = forms.EmailField(
+        label='Your Email',
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
+    )
+    message = forms.CharField(
+        label='Your Message',
+        widget=forms.Textarea(attrs={'class': 'form-control'}))
