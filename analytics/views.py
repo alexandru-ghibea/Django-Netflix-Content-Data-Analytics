@@ -51,6 +51,8 @@ class CsvAnalyticsView(TemplateView):
             context = ProfilesTotalWatchTimeAnalytics().get_context_data(context, user)
             context = Top3MostWatchedAnalytics().get_context_data(context, user)
             context = Top3DaysAnalytics().get_context_data(context, user)
+            context = TopDaysAnalytics().get_context_data(context, user)
+            context = TopHoursAnalytics().get_context_data(context, user)
             return context
         # if the file is not one of the above, return an error message
         else:
@@ -105,9 +107,10 @@ class BillingHistoryAnalytics:
         ax = grouped_data.plot(
             x="Pmt Status", y="Gross Sale Amt", kind='bar', rot=0, ax=ax)
 
-        for i, row in grouped_data.iterrows():
-            ax.text(i, row["Gross Sale Amt"], str(
-                row["Gross Sale Amt"]), ha="center")
+        # Display the values on top of the bars
+        # for i, row in grouped_data.iterrows():
+        #     ax.text(i, row["Gross Sale Amt"], str(
+        #         row["Gross Sale Amt"]), ha="center")
 
         plt.title(plot_title)
         plt.xlabel("Payment Status")
@@ -125,12 +128,7 @@ class BillingHistoryAnalytics:
         # Add the plot to the context as a base64-encoded string
         plot_data_billing = base64.b64encode(buf.getvalue()).decode('utf-8')
 
-        # Get the table data
-        # table_data = clean_df.to_dict('records')
-
         # Add the data to the context
-        # context['table_data'] = table_data
-        # context['plot_title'] = plot_title
         context['plot_data_billing'] = plot_data_billing
         return context
 
@@ -170,7 +168,7 @@ class ProfilesTotalWatchTimeAnalytics:
         duration_data = df.groupby('Profile Name')['Duration'].sum()
 
         # Create pie chart for total duration by profile
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(4, 4))
         formatted_durations = duration_data.apply(
             lambda x: f"{x.days} days\n{x.components.hours} hrs and {x.components.minutes} minutes")
         labels = [f'{label} ({duration})' for label, duration in zip(
@@ -215,11 +213,8 @@ class Top3MostWatchedAnalytics:
         df['Date'] = df['Start Time'].dt.date
 
         # Group the data by Profile Name and calculate total duration for each profile
-
         clean_df = df[selected_columns].copy()
-
         clean_df.loc[:, 'Title'] = clean_df['Title'].apply(extract_name)
-
         # Calculate the total duration for each title across all profiles
         grouped_duration_data = clean_df.groupby(["Profile Name", "Title"]).agg({
             "Duration": "sum"}).reset_index()
@@ -280,7 +275,7 @@ class Top3DaysAnalytics:
         df['Start Time'] = pd.to_datetime(df['Start Time'])
         df['Date'] = df['Start Time'].dt.date
         profile_names = df['Profile Name'].unique()
-        fig, axs = plt.subplots(3, 1, figsize=(12, 12), tight_layout=True)
+        fig, axs = plt.subplots(1, 3, figsize=(12, 4), tight_layout=True)
         colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
         for i, profile_name in enumerate(profile_names):
             profile_data = df[df['Profile Name'] == profile_name].copy()
@@ -295,7 +290,6 @@ class Top3DaysAnalytics:
             for date, duration in sorted_durations.head(3).items():
                 titles = profile_data[profile_data['Date']
                                       == date]['Title'].unique()
-                title_count = len(titles)
                 top_dates.append(str(date))
                 top_durations.append(duration.total_seconds() / 3600)
                 top_titles.append('\n'.join(titles))
@@ -305,7 +299,7 @@ class Top3DaysAnalytics:
             # ax.set_xlabel('Date')
             ax.set_ylabel('Total View Time (hours)')
             ax.set_title(
-                f'Top 3 Days Most Watched - \n Profile: {profile_name}')
+                f'Top 3 Days Most Watched \n Profile: {profile_name}')
             ax.set_xticklabels(top_dates, rotation=45)
             plt.subplots_adjust(hspace=0.5)
             plt.tight_layout()
@@ -323,4 +317,128 @@ class Top3DaysAnalytics:
             plot_data_top_3_days_most_watched = base64.b64encode(
                 buf.getvalue()).decode('utf-8')
             context['plot_data_top_3_days_most_watched'] = plot_data_top_3_days_most_watched
+        return context
+
+# View for most watched days/months for each user
+
+
+class TopDaysAnalytics:
+    @staticmethod
+    def get_context_data(context, user):
+        selected_columns = ["Profile Name", "Start Time",
+                            "Duration", "Title", "Device Type"]
+        # Get the table data
+        csv_file_obj = Csv.objects.filter(
+            user=user, csv_file__icontains='ViewingActivity.csv').first()
+        csv_file_path = csv_file_obj.csv_file.path
+        df = pd.read_csv(csv_file_path, usecols=selected_columns)
+        df['Duration'] = pd.to_timedelta(df['Duration'])
+        df['Start Time'] = pd.to_datetime(df['Start Time'])
+        df['Day of Week'] = df['Start Time'].dt.day_name()
+        profile_names = df['Profile Name'].unique()
+        fig, axs = plt.subplots(1, 3, figsize=(12, 4), tight_layout=True)
+        colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+        for i, profile_name in enumerate(profile_names):
+            profile_data = df[df['Profile Name'] == profile_name].copy()
+            profile_data.loc[:, 'Title'] = profile_data['Title'].apply(
+                extract_name)
+            total_duration = profile_data.groupby(
+                'Day of Week')['Duration'].sum()
+            sorted_durations = total_duration.sort_values(ascending=False)
+
+            top_dates = []
+            top_durations = []
+            top_titles = []
+            for day, duration in sorted_durations.items():
+                titles = profile_data[profile_data['Day of Week']
+                                      == day]['Title'].unique()
+                top_dates.append(day)
+                top_durations.append(duration.total_seconds() / 3600)
+                top_titles.append('\n'.join(titles))
+
+            ax = axs[i]
+            ax.bar(top_dates, top_durations, color=colors)
+            ax.set_ylabel('Total View Time (hours)')
+            ax.set_title(
+                f'Most Watched Days of the Week \n Profile: {profile_name}')
+            ax.set_xticklabels(top_dates, rotation=45)
+            plt.subplots_adjust(hspace=0.5)
+            plt.tight_layout()
+
+            # Save the plot to a buffer
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            buf.seek(0)
+
+            # Add the plot to the context as an HTTP response
+            plot_data_most_watched_days = HttpResponse(
+                buf.getvalue(), content_type='image/png')
+
+            # Add the plot to the context as a base64-encoded string
+            plot_data_most_watched_days = base64.b64encode(
+                buf.getvalue()).decode('utf-8')
+            context['plot_data_most_watched_days'] = plot_data_most_watched_days
+            # calculated_duration = df.groupby(['Profile Name', 'Day of Week'])[
+            #     'Duration'].sum()
+            # print(calculated_duration)
+        return context
+
+
+class TopHoursAnalytics:
+    @staticmethod
+    def get_context_data(context, user):
+        selected_columns = ["Profile Name", "Start Time",
+                            "Duration", "Title", "Device Type"]
+        # Get the table data
+        csv_file_obj = Csv.objects.filter(
+            user=user, csv_file__icontains='ViewingActivity.csv').first()
+        csv_file_path = csv_file_obj.csv_file.path
+        df = pd.read_csv(csv_file_path, usecols=selected_columns)
+        df['Duration'] = pd.to_timedelta(df['Duration'])
+        df['Start Time'] = pd.to_datetime(df['Start Time'])
+        df['Hour Interval'] = pd.cut(df['Start Time'].dt.hour, bins=[
+                                     0, 7, 15, 23], labels=['Night', 'Morning', 'Evening'])
+        profile_names = df['Profile Name'].unique()
+        fig, axs = plt.subplots(1, 3, figsize=(12, 4), tight_layout=True)
+        colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+        for i, profile_name in enumerate(profile_names):
+            profile_data = df[df['Profile Name'] == profile_name].copy()
+            profile_data.loc[:, 'Title'] = profile_data['Title'].apply(
+                extract_name)
+            total_duration = profile_data.groupby(
+                'Hour Interval')['Duration'].sum().dt.total_seconds() / 3600
+            sorted_durations = total_duration.sort_values(ascending=False)
+
+            top_intervals = []
+            top_durations = []
+            top_titles = []
+            for interval, duration in sorted_durations.items():
+                titles = profile_data[profile_data['Hour Interval']
+                                      == interval]['Title'].unique()
+                top_intervals.append(interval)
+                top_durations.append(duration)
+                top_titles.append('\n'.join(titles))
+
+            ax = axs[i]
+            ax.bar(top_intervals, top_durations, color=colors)
+            ax.set_ylabel('Total View Time (hours)')
+            ax.set_title(
+                f"Most Watched Hours of the Day \n Profile: {profile_name}")
+            ax.set_xticklabels(top_intervals, rotation=45)
+            plt.subplots_adjust(hspace=0.5)
+            plt.tight_layout()
+
+            # Save the plot to a buffer
+            buf = io.BytesIO()
+            plt.savefig(buf, format='png')
+            buf.seek(0)
+
+            # Add the plot to the context as an HTTP response
+            plot_data_most_watched_hours = HttpResponse(
+                buf.getvalue(), content_type='image/png')
+
+            # Add the plot to the context as a base64-encoded string
+            plot_data_most_watched_hours = base64.b64encode(
+                buf.getvalue()).decode('utf-8')
+            context['plot_data_most_watched_hours'] = plot_data_most_watched_hours
         return context

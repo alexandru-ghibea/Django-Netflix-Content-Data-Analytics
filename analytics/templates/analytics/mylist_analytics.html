@@ -1,50 +1,6 @@
 {% extends 'base.html' %}
 {%load static%}
 {% block content %}
-<br>
-<br>
-<br>
-{% if plot_data %}
-<div class="container my-chart">
-    <img src="data:image/png;base64,{{ plot_data }}" alt="Total Watched Time By Profile">
-</div>
-<div class="container my-chart">
-    {% if plot_data_top_3 %}
-    <img src="data:image/png;base64,{{ plot_data_top_3 }}" alt="Total Watched Time By Profile">
-    {% endif %}
-</div>
-<div class="container my-chart">
-    {% if plot_data_top_3 %}
-    <img src="data:image/png;base64,{{ plot_data_top_4 }}" alt="Total Watched Time By Profile">
-    {% endif %}
-</div>
-
-
-{%else%}
-{% if error_message %}
-<div class="alert alert-danger">{{ error_message|upper }}</div>
-{% else %}
-<table class="table table-bordered">
-    <thead>
-        {%if filename == "Profiles.csv"%}
-        <tr>
-            <th>Profile Name</th>
-            <th>Profile Creation Time</th>
-            <th>Maturity Level</th>
-            <th>Primary Lang</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for row in table_data %}
-        <tr>
-            {% for k, v in row.items %}
-            <td>{{ v }}</td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{%else%}
 <h2>User Profile Favorites</h2>
 <p> <em>Filter by Profile Name /Title Name</em> </p>
 <br>
@@ -144,7 +100,5 @@
         }
     }
 </script>
-{% endif %}
-{% endif %}
-{% endif %}
+
 {% endblock %}

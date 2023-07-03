@@ -87,3 +87,7 @@ a {
 a:hover {
   color: red;
 }
+.prev-button,
+.next-button {
+  color: black;
+}

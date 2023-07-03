@@ -2,21 +2,86 @@
 {% load static %}
 
 {% block content %}
-<div class="container my-chart">
-    {% if plot_data_watch_time %}
-    <img src="data:image/png;base64,{{ plot_data_watch_time }}" alt="Total Watched Time By Profile">
-    {% endif %}
+<h1>Content Analytics</h1>
+<div class="container">
+    <div class="my-chart">
+        <div class="chart-page" id="chart-page-1">
+            {% if plot_data_watch_time %}
+            <img src="data:image/png;base64,{{ plot_data_watch_time }}" alt="Total Watched Time By Profile">
+            {% endif %}
+        </div>
+        <div class="chart-page" id="chart-page-2">
+            {% if plot_data_top_3_most_watched %}
+            <img src="data:image/png;base64,{{ plot_data_top_3_most_watched }}" alt="Top 3 Most Watched Analytics">
+            {% endif %}
+        </div>
+        <div class="chart-page" id="chart-page-3">
+            {% if plot_data_top_3_days_most_watched %}
+            <img src="data:image/png;base64,{{ plot_data_top_3_days_most_watched }}" alt="Top 3 Days Analytics">
+            {% endif %}
+        </div>
+        <div class="chart-page" id="chart-page-4">
+            {% if plot_data_most_watched_days %}
+            <img src="data:image/png;base64,{{ plot_data_most_watched_days }}" alt="Most Watched Days">
+            {% endif %}
+        </div>
+        <div class="chart-page" id="chart-page-5">
+            {% if plot_data_most_watched_hours %}
+            <img src="data:image/png;base64,{{ plot_data_most_watched_hours }}" alt="Most Watched Hours">
+            {% endif %}
+        </div>
+    </div>
+    <div class="pagination">
+        <button class="prev-button" onclick="prevChartPage()" disabled>Prev</button>
+        <span id="page-number"></span>
+        <button class="next-button" onclick="nextChartPage()">Next</button>
+    </div>
 </div>
 
-<div class="container my-chart">
-    {% if plot_data_top_3_most_watched %}
-    <img src="data:image/png;base64,{{ plot_data_top_3_most_watched }}" alt="Top3MostWatchedAnalytics">
-    {% endif %}
-</div>
+<script>
+    var currentPage = 1;
+    var totalPages = document.getElementsByClassName("chart-page").length;
 
-<div class="container my-chart">
-    {% if plot_data_top_3_days_most_watched%}
-    <img src="data:image/png;base64,{{ plot_data_top_3_days_most_watched }}" alt="Top3DaysAnalytics">
-    {% endif %}
-</div>
+    function prevChartPage() {
+        currentPage--;
+        if (currentPage < 1) {
+            currentPage = 1;
+        }
+        showChartPage(currentPage);
+    }
+
+    function nextChartPage() {
+        currentPage++;
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
+        showChartPage(currentPage);
+    }
+
+    function showChartPage(pageNumber) {
+        var chartPages = document.getElementsByClassName("chart-page");
+        for (var i = 0; i < chartPages.length; i++) {
+            chartPages[i].style.display = "none";
+        }
+        chartPages[pageNumber - 1].style.display = "block";
+
+        document.getElementById("page-number").textContent = "Page " + pageNumber + " of " + totalPages;
+
+        var prevButton = document.getElementsByClassName("prev-button")[0];
+        var nextButton = document.getElementsByClassName("next-button")[0];
+
+        if (pageNumber === 1) {
+            prevButton.disabled = true;
+            nextButton.disabled = false;
+        } else if (pageNumber === totalPages) {
+            prevButton.disabled = false;
+            nextButton.disabled = true;
+        } else {
+            prevButton.disabled = false;
+            nextButton.disabled = false;
+        }
+    }
+
+    showChartPage(currentPage);
+</script>
 {% endblock %}
