@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from django.views.generic import FormView
 from django.contrib import messages
 from django.utils import timezone
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -120,4 +121,5 @@ class ContactView(LoginRequiredMixin, FormView):
         form.send_email()
         messages.success(
             self.request, 'Your message was successfully sent!')
-        return redirect('users:contact', pk=self.request.user.pk)
+        # return redirect('users:contact')
+        return super().form_valid(form)

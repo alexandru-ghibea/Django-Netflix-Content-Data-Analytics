@@ -16,4 +16,5 @@ urlpatterns = [
          name='change_password'),
     path('contact/', views.ContactView.as_view(), name='contact'),
 
+
 ]

@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm
+from django.core.mail import EmailMessage
 
 
 class UserRegisterForm(UserCreationForm):
@@ -57,3 +58,13 @@ class ContactForm(forms.Form):
     message = forms.CharField(
         label='Your Message',
         widget=forms.Textarea(attrs={'class': 'form-control'}))
+
+    def send_email(self):
+        name = self.cleaned_data['name']
+        email = self.cleaned_data['email']
+        message = self.cleaned_data['message']
+        email_subject = f'You have a new message from {name}'
+        email_body = f'{message} \n\n Reply to: {email}'
+        email = EmailMessage(email_subject, email_body, to=[
+                             'testpython2023@gmail.com'])
+        email.send()

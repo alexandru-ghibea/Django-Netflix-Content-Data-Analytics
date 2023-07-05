@@ -4,12 +4,19 @@
 {% block content %}
 <br>
 <div class="container">
-    <form action="mailto:test@gmail.com" method="POST">
+    <form method="POST">
         {% csrf_token %}
         {% bootstrap_form form %}
         <br>
-        <button type="submit" class="btn btn-danger">Submit</button>
+        <button type="submit" class="btn btn-danger">Send Email</button>
     </form>
 </div>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endfor %}
+</ul>
+{% endif %}
 
 {% endblock %}
