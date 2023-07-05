@@ -67,6 +67,7 @@ class ChangeProfilePictureView(LoginRequiredMixin, UpdateView):
     model = UserProfile
     fields = ['profile_pic']
     template_name = 'users/change_profile_picture.html'
+    success_url = reverse_lazy('users:change_profile_picture')
 
     def get_object(self):
         # Retrieve the User object for the currently logged-in user
