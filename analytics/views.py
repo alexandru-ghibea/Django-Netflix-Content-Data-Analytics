@@ -1,3 +1,4 @@
+import requests
 import base64
 from django.views.generic import TemplateView
 from uploads.models import Csv
