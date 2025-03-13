@@ -37,7 +37,7 @@ DateTime==4.9
 debugpy==1.6.5
 decorator==5.1.1
 dill==0.3.6
-Django==4.1.13
+Django==4.2.20
 django-bootstrap5==23.1
 django-csv==1.2
 django-pivot==1.9.0
@@ -71,7 +71,7 @@ ipython==8.10.0
 isort==5.10.1
 itsdangerous==2.1.2
 jedi==0.18.2
-Jinja2==3.1.2
+Jinja2==3.1.6
 joblib==1.2.0
 jupyter_client==7.4.9
 jupyter_core==5.1.3
