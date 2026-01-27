@@ -1,5 +1,5 @@
-import requests
 import base64
+from pathlib import Path
 from django.views.generic import TemplateView
 from uploads.models import Csv
 import pandas as pd
@@ -31,12 +31,36 @@ def load_csv_data(context, user, filename, usecols):
             f"No uploaded data found for {filename}. Please upload the file and try again.")
         return None
 
+    csv_path = Path(csv_file_obj.csv_file.path)
+    if not csv_path.exists():
+        context['error_message'] = (
+            f"Uploaded file for {filename} could not be found. Please re-upload the file.")
+        return None
+
+    try:
+        header_df = pd.read_csv(csv_path, nrows=0)
     try:
         return pd.read_csv(csv_file_obj.csv_file.path, usecols=usecols)
     except (FileNotFoundError, pd.errors.EmptyDataError) as exc:
         context['error_message'] = (
             f"Unable to read {filename}: {exc}. Please re-upload the file and try again.")
         return None
+
+    available_columns = set(header_df.columns)
+    missing_columns = [column for column in usecols if column not in available_columns]
+    if missing_columns:
+        context['error_message'] = (
+            f"Missing columns in {filename}: {', '.join(missing_columns)}. "
+            "Please upload the correct export.")
+        return None
+
+    df = pd.read_csv(csv_path, usecols=usecols)
+    if df.empty:
+        context['error_message'] = (
+            f"No data rows found in {filename}. Please upload a file with data.")
+        return None
+
+    return df
 
 
 class CsvAnalyticsView(TemplateView):
