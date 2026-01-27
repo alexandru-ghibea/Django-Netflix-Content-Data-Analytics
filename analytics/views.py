@@ -1,5 +1,5 @@
-import requests
 import base64
+from pathlib import Path
 from django.views.generic import TemplateView
 from uploads.models import Csv
 import pandas as pd
@@ -21,6 +21,44 @@ def extract_name(title):
         return title.split(":")[0]
     else:
         return title
+
+
+def load_csv_data(context, user, filename, usecols):
+    csv_file_obj = Csv.objects.filter(
+        user=user, csv_file__icontains=filename).first()
+    if not csv_file_obj:
+        context['error_message'] = (
+            f"No uploaded data found for {filename}. Please upload the file and try again.")
+        return None
+
+    csv_path = Path(csv_file_obj.csv_file.path)
+    if not csv_path.exists():
+        context['error_message'] = (
+            f"Uploaded file for {filename} could not be found. Please re-upload the file.")
+        return None
+
+    try:
+        header_df = pd.read_csv(csv_path, nrows=0)
+    except (FileNotFoundError, pd.errors.EmptyDataError) as exc:
+        context['error_message'] = (
+            f"Unable to read {filename}: {exc}. Please re-upload the file and try again.")
+        return None
+
+    available_columns = set(header_df.columns)
+    missing_columns = [column for column in usecols if column not in available_columns]
+    if missing_columns:
+        context['error_message'] = (
+            f"Missing columns in {filename}: {', '.join(missing_columns)}. "
+            "Please upload the correct export.")
+        return None
+
+    df = pd.read_csv(csv_path, usecols=usecols)
+    if df.empty:
+        context['error_message'] = (
+            f"No data rows found in {filename}. Please upload a file with data.")
+        return None
+
+    return df
 
 
 class CsvAnalyticsView(TemplateView):
@@ -68,10 +106,9 @@ class ProfilesAnalytics:
             'Profile Name', 'Profile Creation Time', 'Maturity Level', 'Primary Lang']
 
         # Get the table data
-        csv_file_obj = Csv.objects.filter(
-            user=user, csv_file__icontains='Profiles.csv').first()
-        csv_file_path = csv_file_obj.csv_file.path
-        df = pd.read_csv(csv_file_path, usecols=selected_columns)
+        df = load_csv_data(context, user, 'Profiles.csv', selected_columns)
+        if df is None:
+            return context
         table_data = df.to_dict('records')
 
         # Add the data to the context
@@ -87,10 +124,9 @@ class BillingHistoryAnalytics:
         plot_title = 'Gross Sale Amount by Currency and Payment Status'
 
         # Get the data from the CSV file
-        csv_file_obj = Csv.objects.filter(
-            user=user, csv_file__icontains='BillingHistory.csv').first()
-        csv_file_path = csv_file_obj.csv_file.path
-        df = pd.read_csv(csv_file_path, usecols=selected_columns)
+        df = load_csv_data(context, user, 'BillingHistory.csv', selected_columns)
+        if df is None:
+            return context
 
         # remove NaN values and duplicates
         clean_df = df.dropna().drop_duplicates()
@@ -140,10 +176,9 @@ class MyListAnalytics:
         selected_columns = ["Profile Name", "Title Name", "Utc Title Add Date"]
 
         # Get the table data
-        csv_file_obj = Csv.objects.filter(
-            user=user, csv_file__icontains='MyList.csv').first()
-        csv_file_path = csv_file_obj.csv_file.path
-        df = pd.read_csv(csv_file_path, usecols=selected_columns)
+        df = load_csv_data(context, user, 'MyList.csv', selected_columns)
+        if df is None:
+            return context
         clean_df = df.dropna().drop_duplicates()
         table_data = clean_df.to_dict('records')
         context['table_data'] = table_data
@@ -157,10 +192,9 @@ class ProfilesTotalWatchTimeAnalytics:
                             "Duration", "Title", "Device Type"]
 
         # Get the table data
-        csv_file_obj = Csv.objects.filter(
-            user=user, csv_file__icontains='ViewingActivity.csv').first()
-        csv_file_path = csv_file_obj.csv_file.path
-        df = pd.read_csv(csv_file_path, usecols=selected_columns)
+        df = load_csv_data(context, user, 'ViewingActivity.csv', selected_columns)
+        if df is None:
+            return context
         df['Duration'] = pd.to_timedelta(df['Duration'])
         df['Start Time'] = pd.to_datetime(df['Start Time'])
         df['Date'] = df['Start Time'].dt.date
@@ -205,10 +239,9 @@ class Top3MostWatchedAnalytics:
                             "Duration", "Title", "Device Type"]
 
         # Get the table data
-        csv_file_obj = Csv.objects.filter(
-            user=user, csv_file__icontains='ViewingActivity.csv').first()
-        csv_file_path = csv_file_obj.csv_file.path
-        df = pd.read_csv(csv_file_path, usecols=selected_columns)
+        df = load_csv_data(context, user, 'ViewingActivity.csv', selected_columns)
+        if df is None:
+            return context
         df['Duration'] = pd.to_timedelta(df['Duration'])
         df['Start Time'] = pd.to_datetime(df['Start Time'])
         df['Date'] = df['Start Time'].dt.date
@@ -268,10 +301,9 @@ class Top3DaysAnalytics:
         selected_columns = ["Profile Name", "Start Time",
                             "Duration", "Title", "Device Type"]
         # Get the table data
-        csv_file_obj = Csv.objects.filter(
-            user=user, csv_file__icontains='ViewingActivity.csv').first()
-        csv_file_path = csv_file_obj.csv_file.path
-        df = pd.read_csv(csv_file_path, usecols=selected_columns)
+        df = load_csv_data(context, user, 'ViewingActivity.csv', selected_columns)
+        if df is None:
+            return context
         df['Duration'] = pd.to_timedelta(df['Duration'])
         df['Start Time'] = pd.to_datetime(df['Start Time'])
         df['Date'] = df['Start Time'].dt.date
@@ -329,10 +361,9 @@ class TopDaysAnalytics:
         selected_columns = ["Profile Name", "Start Time",
                             "Duration", "Title", "Device Type"]
         # Get the table data
-        csv_file_obj = Csv.objects.filter(
-            user=user, csv_file__icontains='ViewingActivity.csv').first()
-        csv_file_path = csv_file_obj.csv_file.path
-        df = pd.read_csv(csv_file_path, usecols=selected_columns)
+        df = load_csv_data(context, user, 'ViewingActivity.csv', selected_columns)
+        if df is None:
+            return context
         df['Duration'] = pd.to_timedelta(df['Duration'])
         df['Start Time'] = pd.to_datetime(df['Start Time'])
         df['Day of Week'] = df['Start Time'].dt.day_name()
@@ -391,10 +422,9 @@ class TopHoursAnalytics:
         selected_columns = ["Profile Name", "Start Time",
                             "Duration", "Title", "Device Type"]
         # Get the table data
-        csv_file_obj = Csv.objects.filter(
-            user=user, csv_file__icontains='ViewingActivity.csv').first()
-        csv_file_path = csv_file_obj.csv_file.path
-        df = pd.read_csv(csv_file_path, usecols=selected_columns)
+        df = load_csv_data(context, user, 'ViewingActivity.csv', selected_columns)
+        if df is None:
+            return context
         df['Duration'] = pd.to_timedelta(df['Duration'])
         df['Start Time'] = pd.to_datetime(df['Start Time'])
         df['Hour Interval'] = pd.cut(df['Start Time'].dt.hour, bins=[
