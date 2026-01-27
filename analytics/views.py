@@ -39,6 +39,8 @@ def load_csv_data(context, user, filename, usecols):
 
     try:
         header_df = pd.read_csv(csv_path, nrows=0)
+    try:
+        return pd.read_csv(csv_file_obj.csv_file.path, usecols=usecols)
     except (FileNotFoundError, pd.errors.EmptyDataError) as exc:
         context['error_message'] = (
             f"Unable to read {filename}: {exc}. Please re-upload the file and try again.")
